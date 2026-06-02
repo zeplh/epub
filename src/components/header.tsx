@@ -10,13 +10,13 @@ const naturalCompare = (a: string, b: string): number => {
   const reg = /(\d+)|(\D+)/g
   const aParts = a.match(reg) || []
   const bParts = b.match(reg) || []
-  
+
   for (let i = 0; i < Math.min(aParts.length, bParts.length); i++) {
     const aPart = aParts[i]
     const bPart = bParts[i]
     const aNum = parseInt(aPart, 10)
     const bNum = parseInt(bPart, 10)
-    
+
     if (!isNaN(aNum) && !isNaN(bNum)) {
       if (aNum !== bNum) return aNum - bNum
     } else {
@@ -24,7 +24,7 @@ const naturalCompare = (a: string, b: string): number => {
       if (cmp !== 0) return cmp
     }
   }
-  
+
   return aParts.length - bParts.length
 }
 
@@ -42,14 +42,14 @@ const PageControl = observer(function(props: { pageIndex: number | null }) {
     const max = storeMain.book.pages.length
     const inputValue = window.prompt(`输入新页码位置 (1 - ${max})：`)
     let num = parseInt(inputValue || '')
-    
+
     if (isNaN(num) || num < 1) return
     else if (num > max) num = max
 
     storeMain.replacePageIndex(props.pageIndex as number, num - 1)
   }, [props.pageIndex])
 
-  const onSetContentq = useCallback((e: React.MouseEvent<<HTMLSpanElement>) => {
+  const onSetContentq = useCallback((e: React.MouseEvent<HTMLSpanElement>) => {
     storeMain.contents.setPageIndexToTitle(
       +(e.currentTarget.dataset.index as string),
       props.pageIndex as number
@@ -164,7 +164,7 @@ const getMimeTypeByExtension = (fileName: string): string | null => {
 
 const detectMimeType = (uint8Array: Uint8Array, fileName: string): string | null => {
   const header = Array.from(uint8Array.subarray(0, 4)).map(item => item.toString(16).padStart(2, '0')).join('')
-  
+
   switch (header) {
     case '89504e47':
       return 'image/png'
@@ -190,8 +190,8 @@ const detectMimeType = (uint8Array: Uint8Array, fileName: string): string | null
 
 const Header = function() {
   const store = React.useContext(React.createContext(storeMain.ui))
-  const inputRef = useRef<<HTMLInputElement>(null)
-  const [inputType, setInputType] = useState<<SupportType>('zip')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [inputType, setInputType] = useState<SupportType>('zip')
 
   const onClickToggleBookVisible = useCallback(() => {
     store.toggleBookVisible()
@@ -203,7 +203,7 @@ const Header = function() {
     store.togglePageVisible()
   }, [store])
 
-  const onClickImport = useCallback((e: React.MouseEvent<<HTMLInputElement>) => {
+  const onClickImport = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
     const newType = e.currentTarget.dataset.type as SupportType
     if (newType === inputType) {
       inputRef.current?.click()
@@ -217,14 +217,14 @@ const Header = function() {
 
     if (inputType === 'zip' && (input?.files?.[0])) {
       const fileName = input.files[0].name
-      
+
       try {
         const zipContent = await JSZip.loadAsync(input.files[0])
-        
+
         const zipEntries = Object.values(zipContent.files)
           .filter(zipItem => !zipItem.dir)
           .sort((a, b) => naturalCompare(a.name, b.name))
-        
+
         if (zipEntries.length === 0) {
           alert('ZIP 压缩包中没有找到文件')
           return
@@ -232,10 +232,10 @@ const Header = function() {
 
         const CONCURRENCY = 5
         const validFiles: File[] = []
-        
+
         for (let i = 0; i < zipEntries.length; i += CONCURRENCY) {
           const batch = zipEntries.slice(i, i + CONCURRENCY)
-          
+
           const batchPromises = batch.map(async (zipItem) => {
             try {
               const uint8Array = await zipItem.async('uint8array')
@@ -255,12 +255,12 @@ const Header = function() {
 
           const batchFiles = await Promise.all(batchPromises)
           validFiles.push(...batchFiles.filter((f): f is File => f !== null))
-          
+
           if (i + CONCURRENCY < zipEntries.length) {
             await new Promise(resolve => setTimeout(resolve, 0))
           }
         }
-        
+
         if (validFiles.length === 0) {
           alert('ZIP 压缩包中没有找到支持的图片格式（支持：jpg、png、webp、avif）')
           return
@@ -268,7 +268,7 @@ const Header = function() {
 
         const sortedFiles = validFiles.sort((a, b) => naturalCompare(a.name, b.name))
         storeMain.importPageFromImages(sortedFiles)
-        
+
         if (storeMain.ui.firstImport) {
           storeMain.ui.toggleBookVisible(fileName)
         }
@@ -290,7 +290,7 @@ const Header = function() {
     const max = storeMain.book.pages.length
     const inputValue = window.prompt(`输入插入位置 (1 - ${max})：`)
     let num = parseInt(inputValue || '')
-    
+
     if (isNaN(num) || num < 1) return
     else if (num > max) num = max
 
@@ -315,48 +315,6 @@ const Header = function() {
         </button>
         <ul className="dropdown-menu" style={{top: 0,left:'100%'}}>
           <li><span className="dropdown-item" data-type="image" onClick={onClickImport}>图片</span></li>
-          <li><span className="dropdown-item" data-type="zip" onClick={onClickImport}>ZIP</span></li>
-        </ul>
-      </div>
-      <div className="nav-item">
-        <button type="button" className="btn btn-primary" onClick={onClickToggleBookVisible} title="书籍信息"><Icon name="book"/></button>
-      </div>
-      <div className="nav-item">
-        <button type="button" className="btn btn-primary" onClick={onClickToggleContentVisible} title="目录"><Icon name="list"/></button>
-      </div>
-      <div className="nav-item">
-        <button type="button" className="btn btn-primary" onClick={onClickTogglePageVisible} title="页面设置"><Icon name="tools"/></button>
-      </div>
-      <div className="nav-item">
-        <button
-          type="button"
-          className="btn btn-primary"
-          disabled={storeMain.book.pages.length === 0}
-          onClick={onClickInsertBlankPage}
-          title="插入空白页"
-        >
-          <Icon name="notification"/>
-        </button>
-      </div>
-      <div className="nav-item">
-        <button
-          type="button"
-          className="btn btn-primary"
-          disabled={storeMain.book.pages.length === 0}
-          onClick={onClickGenerate}
-          title="生成 EPUB"
-        >
-          <Icon name="install"/>
-        </button>
-      </div>
-      <PageControl pageIndex={store.selectedPageIndex}/>
-      <input
-        key={inputType}
-        id="input-upload"
-        ref={inputRef}
-        type="file"
-        value=""
-        accept={AcceptMapdropdown-item" data-type="image" onClick={onClickImport}>图片</span></li>
           <li><span className="dropdown-item" data-type="zip" onClick={onClickImport}>ZIP</span></li>
         </ul>
       </div>

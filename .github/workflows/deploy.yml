@@ -2,7 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
+<<<<<<< HEAD
     branches: [main]
+=======
+    branches: [master]
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
   workflow_dispatch:
 
 permissions:
@@ -22,10 +26,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
+<<<<<<< HEAD
         uses: actions/checkout@v4
       
       - name: Setup Node
         uses: actions/setup-node@v4
+=======
+        uses: actions/checkout@v3
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
         with:
           node-version: '16'
       

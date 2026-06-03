@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import Icon from 'components/icon'
 import storeMain from 'store/main'
+<<<<<<< HEAD
 // import storeBlobs from 'store/blobs'
 
 type SupportType = 'image' | 'zip' | 'epub'
@@ -14,16 +15,26 @@ type SupportType = 'image' | 'zip' | 'epub'
  * @param b - 比较的字符串 b
  * @returns 比较结果：负数表示 a 在前，正数表示 b 在前
  */
+=======
+
+type SupportType = 'image' | 'zip' | 'epub'
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
 const naturalCompare = (a: string, b: string): number => {
   const reg = /(\d+)|(\D+)/g
   const aParts = a.match(reg) || []
   const bParts = b.match(reg) || []
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
   for (let i = 0; i < Math.min(aParts.length, bParts.length); i++) {
     const aPart = aParts[i]
     const bPart = bParts[i]
     const aNum = parseInt(aPart, 10)
     const bNum = parseInt(bPart, 10)
+<<<<<<< HEAD
     
     if (!isNaN(aNum) && !isNaN(bNum)) {
       if (aNum !== bNum) {
@@ -37,6 +48,17 @@ const naturalCompare = (a: string, b: string): number => {
     }
   }
   
+=======
+
+    if (!isNaN(aNum) && !isNaN(bNum)) {
+      if (aNum !== bNum) return aNum - bNum
+    } else {
+      const cmp = aPart.localeCompare(bPart)
+      if (cmp !== 0) return cmp
+    }
+  }
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
   return aParts.length - bParts.length
 }
 
@@ -54,12 +76,18 @@ const PageControl = observer(function(props: { pageIndex: number | null }) {
     const max = storeMain.book.pages.length
     const inputValue = window.prompt(`输入新页码位置 (1 - ${max})：`)
     let num = parseInt(inputValue || '')
+<<<<<<< HEAD
     
     if (isNaN(num) || num < 1) {
       return
     } else if (num > max) {
       num = max
     }
+=======
+
+    if (isNaN(num) || num < 1) return
+    else if (num > max) num = max
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
 
     storeMain.replacePageIndex(props.pageIndex as number, num - 1)
   }, [props.pageIndex])
@@ -108,6 +136,7 @@ const PageControl = observer(function(props: { pageIndex: number | null }) {
     <>
       <div className="nav-item">
         <button type="button" className="btn btn-secondary" disabled={blankPage} onClick={onUseImageSizeToPage}>
+<<<<<<< HEAD
             <Icon name="ruler"/>
           </button>
       </div>
@@ -115,10 +144,20 @@ const PageControl = observer(function(props: { pageIndex: number | null }) {
         <button type="button" className="btn btn-secondary" onClick={onChangePageIndex}>
             <Icon name="menu"/>
           </button>
+=======
+          <Icon name="ruler"/>
+        </button>
+      </div>
+      <div className="nav-item">
+        <button type="button" className="btn btn-secondary" onClick={onChangePageIndex}>
+          <Icon name="menu"/>
+        </button>
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
       </div>
       <div className="nav-item dropdown">
         <button type="button" className="btn btn-secondary"><Icon name="bookmark"/></button>
         <ul className="dropdown-menu" style={{top: 0,left:'100%'}}>
+<<<<<<< HEAD
           {
             storeMain.contents.list.map((contentItem, index) =>
               <li key={index}>
@@ -132,6 +171,19 @@ const PageControl = observer(function(props: { pageIndex: number | null }) {
               </li>
             )
           }
+=======
+          {storeMain.contents.list.map((contentItem, index) =>
+            <li key={index}>
+              <span
+                className={"dropdown-item" + (contentItem.pageIndex === props.pageIndex ? ' active' : '')}
+                data-index={index}
+                onClick={onSetContentq}
+              >
+                {contentItem.title}
+              </span>
+            </li>
+          )}
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
         </ul>
       </div>
       <div className="nav-item">
@@ -160,6 +212,7 @@ const MultipleAttrMap = {
   epub: false,
 }
 
+<<<<<<< HEAD
 const blobToFile = (theBlob: Blob, fileName:string): File => {
   var b: any = theBlob
   //A Blob() is almost a File() - it's just missing the two properties below which we will add
@@ -204,20 +257,60 @@ const detectMimeType = (uint8Array: Uint8Array, fileName: string): string | null
   // https://stackoverflow.com/questions/18299806/how-to-check-file-mime-type-with-javascript-before-upload
   const header = Array.from(uint8Array.subarray(0, 4)).map(item => item.toString(16).padStart(2, '0')).join('')
   
+=======
+const blobToFile = (theBlob: Blob, fileName: string): File => {
+  return new File([theBlob], fileName, { 
+    type: theBlob.type, 
+    lastModified: Date.now() 
+  })
+}
+
+const getMimeTypeByExtension = (fileName: string): string | null => {
+  const ext = fileName.split('.').pop()?.toLowerCase()
+  switch (ext) {
+    case 'png': return 'image/png'
+    case 'webp': return 'image/webp'
+    case 'jpg':
+    case 'jpeg': return 'image/jpeg'
+    case 'avif': return 'image/avif'
+    default: return null
+  }
+}
+
+const detectMimeType = (uint8Array: Uint8Array, fileName: string): string | null => {
+  const header = Array.from(uint8Array.subarray(0, 4)).map(item => item.toString(16).padStart(2, '0')).join('')
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
   switch (header) {
     case '89504e47':
       return 'image/png'
     case '52494646':
+<<<<<<< HEAD
       return 'image/webp'
+=======
+      if (uint8Array.length >= 12) {
+        const webpHeader = Array.from(uint8Array.subarray(8, 12)).map(item => String.fromCharCode(item)).join('')
+        if (webpHeader === 'WEBP') return 'image/webp'
+      }
+      return getMimeTypeByExtension(fileName)
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
     case 'ffd8ffe0':
     case 'ffd8ffe1':
     case 'ffd8ffe2':
     case 'ffd8ffe3':
     case 'ffd8ffe8':
+<<<<<<< HEAD
       return 'image/jpeg'
     default:
       // AVIF 基于 ISOBMFF 格式，没有固定的 4 字节 magic number
       // 通过文件扩展名辅助判断
+=======
+    case 'ffd8ffdb':
+    case 'ffd8ffee':
+    case 'ffd8ffec':
+      return 'image/jpeg'
+    default:
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
       return getMimeTypeByExtension(fileName)
   }
 }
@@ -225,7 +318,11 @@ const detectMimeType = (uint8Array: Uint8Array, fileName: string): string | null
 const Header = function() {
   const store = React.useContext(React.createContext(storeMain.ui))
   const inputRef = useRef<HTMLInputElement>(null)
+<<<<<<< HEAD
   const [inputType, setInputType] = useState<SupportType>('zip') // 修改这里可以改默认格式
+=======
+  const [inputType, setInputType] = useState<SupportType>('zip')
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
 
   const onClickToggleBookVisible = useCallback(() => {
     store.toggleBookVisible()
@@ -239,7 +336,10 @@ const Header = function() {
 
   const onClickImport = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
     const newType = e.currentTarget.dataset.type as SupportType
+<<<<<<< HEAD
 
+=======
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
     if (newType === inputType) {
       inputRef.current?.click()
     } else {
@@ -252,6 +352,7 @@ const Header = function() {
 
     if (inputType === 'zip' && (input?.files?.[0])) {
       const fileName = input.files[0].name
+<<<<<<< HEAD
       
       try {
         const zipContent = await JSZip.loadAsync(input.files[0])
@@ -261,11 +362,22 @@ const Header = function() {
           .filter(zipItem => !zipItem.dir) // 过滤掉目录条目
           .sort((a, b) => naturalCompare(a.name, b.name)) // 使用自然排序
         
+=======
+
+      try {
+        const zipContent = await JSZip.loadAsync(input.files[0])
+
+        const zipEntries = Object.values(zipContent.files)
+          .filter(zipItem => !zipItem.dir)
+          .sort((a, b) => naturalCompare(a.name, b.name))
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
         if (zipEntries.length === 0) {
           alert('ZIP 压缩包中没有找到文件')
           return
         }
 
+<<<<<<< HEAD
         // 批次大小：每批处理 10 个文件，平衡性能和稳定性
         const BATCH_SIZE = 10
         const allFiles: File[] = []
@@ -275,6 +387,14 @@ const Header = function() {
           const batch = zipEntries.slice(i, i + BATCH_SIZE)
           
           // 处理当前批次（内部使用 Promise.all 保证该批次全有或全无）
+=======
+        const CONCURRENCY = 5
+        const validFiles: File[] = []
+
+        for (let i = 0; i < zipEntries.length; i += CONCURRENCY) {
+          const batch = zipEntries.slice(i, i + CONCURRENCY)
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
           const batchPromises = batch.map(async (zipItem) => {
             try {
               const uint8Array = await zipItem.async('uint8array')
@@ -282,8 +402,12 @@ const Header = function() {
 
               if (mimeType) {
                 const b = new Blob([uint8Array], { type: mimeType })
+<<<<<<< HEAD
                 // 提取文件名（去掉路径前缀）
                 const baseName = zipItem.name.replace(/^.+\//, '')
+=======
+                const baseName = zipItem.name.replace(/^.*[\\/]/, '')
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
                 return blobToFile(b, baseName)
               }
               return null
@@ -293,6 +417,7 @@ const Header = function() {
             }
           })
 
+<<<<<<< HEAD
           const batchResults = await Promise.all(batchPromises)
           const validBatch = batchResults.filter((f): f is File => f !== null)
           
@@ -305,27 +430,53 @@ const Header = function() {
         }
         
         if (allFiles.length === 0) {
+=======
+          const batchFiles = await Promise.all(batchPromises)
+          validFiles.push(...batchFiles.filter((f): f is File => f !== null))
+
+          if (i + CONCURRENCY < zipEntries.length) {
+            await new Promise(resolve => setTimeout(resolve, 0))
+          }
+        }
+
+        if (validFiles.length === 0) {
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
           alert('ZIP 压缩包中没有找到支持的图片格式（支持：jpg、png、webp、avif）')
           return
         }
 
+<<<<<<< HEAD
         // 导入图片（所有批次成功）
         storeMain.importPageFromImages(allFiles)
         
+=======
+        const sortedFiles = validFiles.sort((a, b) => naturalCompare(a.name, b.name))
+        storeMain.importPageFromImages(sortedFiles)
+
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
         if (storeMain.ui.firstImport) {
           storeMain.ui.toggleBookVisible(fileName)
         }
       } catch (err) {
         console.error('解析 ZIP 文件失败：', err)
+<<<<<<< HEAD
         alert(`导入失败：${err instanceof Error ? err.message : '未知错误'}\n请检查 ZIP 文件是否包含完整且未损坏的图片。`)
+=======
+        alert('解析 ZIP 文件失败，请检查文件是否损坏')
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
       }
       return
     }
 
+<<<<<<< HEAD
     // 处理直接导入图片（jpg、png、webp、avif）
     if (input.files && input.files.length > 0) {
       const files = Array.from(input.files)
       // 按文件名自然排序，确保顺序一致
+=======
+    if (input.files && input.files.length > 0) {
+      const files = Array.from(input.files)
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
       const sortedFiles = files.sort((a, b) => naturalCompare(a.name, b.name))
       storeMain.importPageFromImages(sortedFiles)
     }
@@ -335,12 +486,18 @@ const Header = function() {
     const max = storeMain.book.pages.length
     const inputValue = window.prompt(`输入插入位置 (1 - ${max})：`)
     let num = parseInt(inputValue || '')
+<<<<<<< HEAD
     
     if (isNaN(num) || num < 1) {
       return
     } else if (num > max) {
       num = max
     }
+=======
+
+    if (isNaN(num) || num < 1) return
+    else if (num > max) num = max
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
 
     storeMain.insertBlankPage(num - 1)
   }, [])
@@ -364,7 +521,10 @@ const Header = function() {
         <ul className="dropdown-menu" style={{top: 0,left:'100%'}}>
           <li><span className="dropdown-item" data-type="image" onClick={onClickImport}>图片</span></li>
           <li><span className="dropdown-item" data-type="zip" onClick={onClickImport}>ZIP</span></li>
+<<<<<<< HEAD
           {/* <li><span className="dropdown-item" data-type="epub" onClick={onClickImport}>epub</span></li> */}
+=======
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
         </ul>
       </div>
       <div className="nav-item">
@@ -414,4 +574,8 @@ const Header = function() {
   )
 }
 
+<<<<<<< HEAD
 export default observer(Header)
+=======
+export default observer(Header)
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab

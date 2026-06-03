@@ -2,7 +2,11 @@
 
 一个基于 Web 的图形界面工具，用于将漫画图片打包成符合日本电子漫画协会（[Digital-Comic-Association](http://www.digital-comic.jp/) / デジタルコミック協議会）规范的 EPUB 格式电子书。
 
+<<<<<<< HEAD
 [点击此处在线使用](https://zeplh.github.io/epub-manga-creator)
+=======
+[点击此处在线使用](https://zeplh.github.io/epub)
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
 
 ---
 
@@ -31,7 +35,11 @@
 
 ### 在线使用
 
+<<<<<<< HEAD
 直接访问 [https://zeplh.github.io/epub-manga-creator]即可使用，无需安装。
+=======
+直接访问 [https://zeplh.github.io/epub]即可使用，无需安装。
+>>>>>>> 794ef74246f92f369f218ade8bd6a833e5d463ab
 
 ### 本地开发
 

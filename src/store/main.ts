@@ -283,11 +283,20 @@ class Store {
   
         let par = 'none'
         if (fitMode !== 'stretch') {
-          par = this.book.pagePosition === 'center'
-            ? 'xMidYMid '
-            : this.book.pageDirection === 'left'
+          const isJustify = this.book.pagePosition !== 'center'
+          if (isJustify && fitMode === 'fit') {
+            // 适应模式下向中间对齐（互换方向）
+            par = this.book.pageDirection === 'left'
+              ? (i + 1) % 2 === 1 ? 'xMinYMid ' : 'xMaxYMid '
+              : (i + 1) % 2 === 1 ? 'xMaxYMid ' : 'xMinYMid '
+          } else if (isJustify) {
+            // 填充模式保持原逻辑
+            par = this.book.pageDirection === 'left'
               ? (i + 1) % 2 === 1 ? 'xMaxYMid ' : 'xMinYMid '
               : (i + 1) % 2 === 1 ? 'xMinYMid ' : 'xMaxYMid '
+          } else {
+            par = 'xMidYMid '
+          }
       
           if (fitMode === 'fit') {
             par += 'meet'
@@ -328,20 +337,29 @@ class Store {
 
         let imgStyle = 'object-fit:fill'
         if (fitMode !== 'stretch') {
-          imgStyle = 'object-position:'
-
-          imgStyle += (
-            this.book.pagePosition === 'center'
-              ? 'center;'
-              : this.book.pageDirection === 'left'
+          const isJustify = this.book.pagePosition !== 'center'
+          if (isJustify && fitMode === 'fit') {
+            // 适应模式下向中间对齐（互换方向）
+            imgStyle = 'object-position:'
+            imgStyle += (
+              this.book.pageDirection === 'left'
+                ? (i + 1) % 2 === 1 ? 'left;' : 'right;'
+                : (i + 1) % 2 === 1 ? 'right;' : 'left;'
+            )
+            imgStyle += 'object-fit:contain'
+          } else if (isJustify) {
+            // 填充模式保持原逻辑
+            imgStyle = 'object-position:'
+            imgStyle += (
+              this.book.pageDirection === 'left'
                 ? (i + 1) % 2 === 1 ? 'right;' : 'left;'
                 : (i + 1) % 2 === 1 ? 'left;' : 'right;'
-          )
-
-          if (fitMode === 'fit') {
-            imgStyle += 'object-fit:contain'
-          } else { // props.imageFit === 'fill'
+            )
             imgStyle += 'object-fit:cover'
+          } else {
+            // 居中模式
+            imgStyle = 'object-position:center;'
+            imgStyle += fitMode === 'fit' ? 'object-fit:contain' : 'object-fit:cover'
           }
         }
 
